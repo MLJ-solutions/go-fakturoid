@@ -1,15 +1,14 @@
 package go_fakturoid
 
 import (
-	"encoding/xml"
+	"bytes"
 	"fmt"
+	"strings"
 )
 
 // TODO refine
 type ErrorResponse struct {
-	XMLName xml.Name `xml:"Error" json:"-"`
-	Code    string
-	Message string
+	Errors map[string][]string
 }
 
 func ToErrorResponse(err error) ErrorResponse {
@@ -21,14 +20,12 @@ func ToErrorResponse(err error) ErrorResponse {
 	}
 }
 
-// Error - Returns S3 error string.
+// Error - Returns error string.
 func (e ErrorResponse) Error() string {
-	if e.Message == "" {
-		msg, ok := errorResponseMap[e.Code]
-		if !ok {
-			msg = fmt.Sprintf("Error response code %s.", e.Code)
-		}
-		return msg
+	b := new(bytes.Buffer)
+	for key, value := range e.Errors {
+		fmt.Fprintf(b, "%s=\"%s\"\n", key, strings.Join(value, ", "))
 	}
-	return e.Message
+
+	return b.String()
 }

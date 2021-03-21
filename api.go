@@ -1,7 +1,10 @@
 package go_fakturoid
 
 import (
+	"encoding/json"
 	"io"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -22,9 +25,10 @@ func (c Client) executeMethod(method string, endpoint string, body io.Reader, me
 
 	// create request
 	req, err := http.NewRequest(method, targetUrl.String(), body)
+	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
-		errResponse := ToErrorResponse(err)
-		return nil, errResponse
+		errRequest := ToErrorResponse(err)
+		return nil, errRequest
 	}
 
 	//fmt.Println(req)
@@ -42,15 +46,19 @@ func (c Client) executeMethod(method string, endpoint string, body io.Reader, me
 		}
 	}
 
-	//// TODO Read the body to be saved later.
-	//errBodyBytes, err := ioutil.ReadAll(res.Body)
-	//// res.Body should be closed
-	//closeResponse(res)
-	//if err != nil {
-	//	return nil, err
-	//}
+	//log.Panic(res)
+	all, err := ioutil.ReadAll(res.Body)
+	closeResponse(res)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	var apiError ErrorResponse
+	json.Unmarshal(all, &apiError)
+	log.Println(string(all))
+	log.Println(apiError.Errors)
+
+	return nil, apiError
 
 }
 

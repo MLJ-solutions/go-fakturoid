@@ -1,7 +1,9 @@
 package go_fakturoid
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/MLJ-solutions/go-fakturoid/models"
 	"io"
 	"net/http"
@@ -66,4 +68,33 @@ func (c Client) SubjectsSearch(query string) ([]models.Subject, error) {
 	}
 
 	return Subjects, nil
+}
+
+// create subject on /subjects.json
+func (c Client) CreateSubject(subject models.Subject) (models.Subject, error) {
+	requestBody, marshalErr := json.Marshal(subject)
+	if marshalErr != nil {
+		return models.Subject{}, marshalErr
+	}
+
+	resp, err := c.executeMethod(http.MethodPost, subjectsEndpoint, bytes.NewBuffer(requestBody), requestMetadata{})
+	if err != nil {
+		return models.Subject{}, err
+	}
+
+	fmt.Println(resp)
+	body, err := io.ReadAll(resp.Body)
+	defer closeResponse(resp)
+
+	if err != nil {
+		return models.Subject{}, err
+	}
+
+	unmarshalErr := json.Unmarshal(body, &subject)
+	fmt.Print(string(body))
+	if unmarshalErr != nil {
+		return models.Subject{}, unmarshalErr
+	}
+
+	return subject, nil
 }
