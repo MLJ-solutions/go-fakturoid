@@ -25,7 +25,6 @@ func main() {
 package main
 
 import (
-	"fmt"
 	go_fakturoid "github.com/MLJ-solutions/go-fakturoid"
 	"log"
 )
@@ -35,7 +34,7 @@ func main() {
 		Creds: go_fakturoid.NewCredentials("EMAIL", "SLUG", "PRIVATE KEY"),
 	})
 
-	fmt.Println(client)
+	log.Println(client)
 
 	account, err := client.Account()
 	if err != nil {
