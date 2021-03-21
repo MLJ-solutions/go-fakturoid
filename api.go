@@ -12,6 +12,7 @@ import (
 // List of success status.
 var successStatus = []int{
 	http.StatusOK,
+	http.StatusCreated,
 	http.StatusNoContent,
 	http.StatusPartialContent,
 }
@@ -46,7 +47,7 @@ func (c Client) executeMethod(method string, endpoint string, body io.Reader, me
 		}
 	}
 
-	//log.Panic(res)
+	//log.Println(res)
 	all, err := ioutil.ReadAll(res.Body)
 	closeResponse(res)
 	if err != nil {
@@ -54,8 +55,12 @@ func (c Client) executeMethod(method string, endpoint string, body io.Reader, me
 	}
 
 	var apiError ErrorResponse
-	json.Unmarshal(all, &apiError)
-	log.Println(string(all))
+	unmarshalErr := json.Unmarshal(all, &apiError)
+	if unmarshalErr != nil {
+		log.Panic(string(all))
+		return nil, unmarshalErr
+	}
+
 	log.Println(apiError.Errors)
 
 	return nil, apiError
