@@ -4,6 +4,7 @@ const (
 	PaymentMethodCard = "card"
 	PaymentMethodCash = "cash"
 	PaymentMethodCod  = "cod"
+	PaymentMethodBank  = "bank"
 )
 
 const (
