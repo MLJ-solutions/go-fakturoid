@@ -13,9 +13,9 @@ var successStatus = []int{
 	http.StatusPartialContent,
 }
 
-func (c Client) executeMethod(method string, endpoint string, body io.Reader) (res *http.Response, err error) {
+func (c Client) executeMethod(method string, endpoint string, body io.Reader, metadata requestMetadata) (res *http.Response, err error) {
 	// create target url with selected accountEndpoint
-	targetUrl, err := c.constructUrl(endpoint)
+	targetUrl, err := c.constructUrl(endpoint, metadata.queryValues)
 	if err != nil {
 		return nil, err
 	}
@@ -54,6 +54,12 @@ func (c Client) executeMethod(method string, endpoint string, body io.Reader) (r
 
 }
 
-func (c Client) constructUrl(endpoint string) (*url.URL, error) {
-	return url.Parse(c.EndpointURL().String() + endpoint)
+func (c Client) constructUrl(endpoint string, queryValues url.Values) (*url.URL, error) {
+	urlStr := c.EndpointURL().String() + endpoint
+
+	// If there are any query values, add them to the end.
+	if len(queryValues) > 0 {
+		urlStr = urlStr + "?" + queryValues.Encode()
+	}
+	return url.Parse(urlStr)
 }

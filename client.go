@@ -36,6 +36,11 @@ type Value struct {
 	ApiKey string
 }
 
+// requestMetadata - is container for all the values to make a request.
+type requestMetadata struct {
+	queryValues url.Values
+}
+
 // New - instantiate minio client with options
 func New(opts *Options) (*Client, error) {
 	endpoint := BasicUrl
@@ -69,7 +74,7 @@ func (c *Client) EndpointURL() *url.URL {
 // getEndpointURL - construct a new accountEndpoint.
 func getEndpointURL(endpoint string, creds *Credentials) (*url.URL, error) {
 	// Construct a secured accountEndpoint URL. https://BASE/SLUG/
-	endpointURLStr := fmt.Sprintf("%s/%s/", endpoint, creds.creds.Slug)
+	endpointURLStr := fmt.Sprintf("%s/%s/", strings.Trim(endpoint, "/"), creds.creds.Slug)
 	endpointURL, err := url.Parse(endpointURLStr)
 	if err != nil {
 		return nil, err

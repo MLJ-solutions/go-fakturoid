@@ -1,9 +1,6 @@
 package models
 
 type Subject struct {
-	//Any string `json:",any"`
-	//Street2        string `json:"street2"`
-
 	Id             int    `json:"id,omitempty"`
 	CustomId       string `json:"custom_id,omitempty"`
 	Name           string `json:"name"`
