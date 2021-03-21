@@ -21,8 +21,9 @@ const (
 	InvoiceQueryUpdatedUntil = "updated_until"
 	InvoiceQueryNumber       = "number"
 	InvoiceQueryStatus       = "status"
-	InvoiceQueryInvoiceId    = "Invoice_id"
-	InvoiceQueryCustomId     = "status"
+	InvoiceQueryInvoiceId    = "invoice_id"
+	InvoiceQueryCustomId     = "custom_id"
+	InvoiceQuerySubjectId    = "subject_id"
 )
 
 // structure to help filter invoices
@@ -34,11 +35,12 @@ type InvoiceFilter struct {
 	Number       string
 	Status       string
 	InvoiceId    int
+	SubjectId    int
 	CustomId     string
 }
 
 func InvoiceFilterFromSubject(subject models.Subject) InvoiceFilter {
-	return InvoiceFilter{InvoiceId: subject.Id}
+	return InvoiceFilter{SubjectId: subject.Id}
 }
 
 func (i InvoiceFilter) prepareMetadata() requestMetadata {
@@ -69,6 +71,9 @@ func (i InvoiceFilter) prepareMetadata() requestMetadata {
 	}
 	if i.CustomId != "" {
 		metadata.queryValues.Add(InvoiceQueryCustomId, i.CustomId)
+	}
+	if i.SubjectId != 0 {
+		metadata.queryValues.Add(InvoiceQuerySubjectId, strconv.Itoa(i.SubjectId))
 	}
 
 	return metadata
