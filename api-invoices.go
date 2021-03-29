@@ -193,3 +193,13 @@ func (c Client) UpdateInvoice(Invoice models.Invoice, Id int) (models.Invoice, e
 
 	return Invoice, nil
 }
+
+// delete Invoice on /invoices/{ID}.json
+func (c Client) DeleteInvoice(Id int) (bool, error) {
+	resp, err := c.executeMethodNoMeta(http.MethodDelete, fmt.Sprintf(invoiceEndpoint, Id), nil)
+	if err != nil {
+		return false, err
+	}
+
+	return resp.StatusCode == http.StatusNoContent, nil
+}
