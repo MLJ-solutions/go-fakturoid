@@ -11,7 +11,7 @@ const accountEndpoint = "account.json"
 
 // reqeuest on /account.json
 func (c Client) Account() (models.Account, error) {
-	resp, err := c.executeMethod(http.MethodGet, accountEndpoint, nil, requestMetadata{})
+	resp, err := c.executeMethodNoMeta(http.MethodGet, accountEndpoint, nil)
 	if err != nil {
 		return models.Account{}, err
 	}

@@ -17,6 +17,10 @@ var successStatus = []int{
 	http.StatusPartialContent,
 }
 
+func (c Client) executeMethodNoMeta(method string, endpoint string, body io.Reader) (res *http.Response, err error) {
+	return c.executeMethod(method, endpoint, body, requestMetadata{})
+}
+
 func (c Client) executeMethod(method string, endpoint string, body io.Reader, metadata requestMetadata) (res *http.Response, err error) {
 	// create target url with selected accountEndpoint
 	targetUrl, err := c.constructUrl(endpoint, metadata.queryValues)

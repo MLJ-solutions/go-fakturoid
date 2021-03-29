@@ -12,6 +12,7 @@ import (
 	"time"
 )
 
+const invoiceEndpoint = "invoices/%d.json"
 const invoicesEndpoint = "invoices.json"
 
 const (
@@ -146,15 +147,11 @@ func (c Client) CreateInvoice(Invoice models.Invoice) (models.Invoice, error) {
 		return models.Invoice{}, marshalErr
 	}
 
-	//fmt.Println("//////")
-	//fmt.Println(string(requestBody))
-	//fmt.Println("//////")
-	resp, err := c.executeMethod(http.MethodPost, invoicesEndpoint, bytes.NewBuffer(requestBody), requestMetadata{})
+	resp, err := c.executeMethodNoMeta(http.MethodPost, invoicesEndpoint, bytes.NewBuffer(requestBody))
 	if err != nil {
 		return models.Invoice{}, err
 	}
 
-	fmt.Println(resp)
 	body, err := io.ReadAll(resp.Body)
 	defer closeResponse(resp)
 
@@ -163,9 +160,33 @@ func (c Client) CreateInvoice(Invoice models.Invoice) (models.Invoice, error) {
 	}
 
 	unmarshalErr := json.Unmarshal(body, &Invoice)
-	//fmt.Println("//////////")
-	//fmt.Println(string(body))
-	//fmt.Println("//////////")
+	if unmarshalErr != nil {
+		return models.Invoice{}, unmarshalErr
+	}
+
+	return Invoice, nil
+}
+
+// update Invoice on /invoices/{ID}.json
+func (c Client) UpdateInvoice(Invoice models.Invoice, Id int) (models.Invoice, error) {
+	requestBody, marshalErr := json.Marshal(Invoice)
+	if marshalErr != nil {
+		return models.Invoice{}, marshalErr
+	}
+
+	resp, err := c.executeMethodNoMeta(http.MethodPatch, fmt.Sprintf(invoiceEndpoint, Id), bytes.NewBuffer(requestBody))
+	if err != nil {
+		return models.Invoice{}, err
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	defer closeResponse(resp)
+
+	if err != nil {
+		return models.Invoice{}, err
+	}
+
+	unmarshalErr := json.Unmarshal(body, &Invoice)
 	if unmarshalErr != nil {
 		return models.Invoice{}, unmarshalErr
 	}

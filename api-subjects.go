@@ -15,7 +15,7 @@ const subjectsEndpoint = "subjects.json"
 // request on /subjects.json
 // TODO paging
 func (c Client) Subjects() ([]models.Subject, error) {
-	resp, err := c.executeMethod(http.MethodGet, subjectsEndpoint, nil, requestMetadata{})
+	resp, err := c.executeMethodNoMeta(http.MethodGet, subjectsEndpoint, nil)
 	if err != nil {
 		return []models.Subject{}, err
 	}
@@ -77,7 +77,7 @@ func (c Client) CreateSubject(subject models.Subject) (models.Subject, error) {
 		return models.Subject{}, marshalErr
 	}
 
-	resp, err := c.executeMethod(http.MethodPost, subjectsEndpoint, bytes.NewBuffer(requestBody), requestMetadata{})
+	resp, err := c.executeMethodNoMeta(http.MethodPost, subjectsEndpoint, bytes.NewBuffer(requestBody))
 	if err != nil {
 		return models.Subject{}, err
 	}
