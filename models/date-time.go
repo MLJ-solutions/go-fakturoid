@@ -40,8 +40,14 @@ type FakturoidDateTime time.Time
 
 func (t FakturoidDateTime) MarshalJSON() ([]byte, error) {
 	//do your serializing here
-	stamp := fmt.Sprintf("\"%s\"", time.Time(t).Format(time.RFC3339))
+	stamp := t.DefaultFormat()
 	return []byte(stamp), nil
+}
+
+func (t FakturoidDateTime) DefaultFormat() string {
+	//do your serializing here
+	stamp := fmt.Sprintf("\"%s\"", time.Time(t).Format(time.RFC3339))
+	return stamp
 }
 
 func (t *FakturoidDateTime) UnmarshalJSON(data []byte) error {
@@ -52,7 +58,7 @@ func (t *FakturoidDateTime) UnmarshalJSON(data []byte) error {
 
 	//do your serializing here
 	var err error
-	parsed, err := time.Parse(time.RFC3339,s)
+	parsed, err := time.Parse(time.RFC3339, s)
 	*t = FakturoidDateTime(parsed)
 
 	return err

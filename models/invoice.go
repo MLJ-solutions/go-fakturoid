@@ -1,5 +1,7 @@
 package models
 
+import "log"
+
 type InvoiceLine struct {
 	Name      string  `json:"name"`
 	Quantity  float32 `json:"quantity,string"`
@@ -93,4 +95,66 @@ type Invoice struct {
 	//EetCashRegister         string        `json:"eet_cash_register,omitempty"`
 	//EetStore                string        `json:"eet_store,omitempty"`
 	//EetRecords              string        `json:"eet_records,omitempty"`
+}
+
+const (
+	EventMarkAsSent         = "mark_as_sent"
+	EventDeliver            = "deliver"
+	EventPay                = "pay"
+	EventPayProforma        = "pay_proforma"
+	EventPayPartialProforma = "pay_partial_proforma"
+	EventRemovePayment      = "remove_payment"
+	EventDeliverReminder    = "deliver_reminder"
+	EventCancel             = "cancel"
+	EventUndoCancel         = "undo_cancel"
+	EventLock               = "lock"
+	EventUnlock             = "unlock"
+)
+
+type InvoiceEvent struct {
+	Event          string
+	PaidAt         *FakturoidDateTime
+	PaidAmount     float32
+	VariableSymbol string
+	BankAccountId  int
+}
+
+func NewPayInvoiceEvent(PaidAt *FakturoidDateTime, PaidAmount float32, VariableSymbol string, BankAccountId int) *InvoiceEvent {
+	return &InvoiceEvent{
+		Event:          EventPay,
+		PaidAt:         PaidAt,
+		PaidAmount:     PaidAmount,
+		VariableSymbol: VariableSymbol,
+		BankAccountId:  BankAccountId,
+	}
+}
+
+func NewInvoiceEvent(event string) *InvoiceEvent {
+	switch event {
+	case EventMarkAsSent:
+		return &InvoiceEvent{Event: EventMarkAsSent}
+	case EventDeliver:
+		return &InvoiceEvent{Event: EventDeliver}
+	case EventPay:
+		return &InvoiceEvent{Event: EventPay}
+	case EventPayProforma:
+		return &InvoiceEvent{Event: EventPayProforma}
+	case EventPayPartialProforma:
+		return &InvoiceEvent{Event: EventPayPartialProforma}
+	case EventRemovePayment:
+		return &InvoiceEvent{Event: EventRemovePayment}
+	case EventDeliverReminder:
+		return &InvoiceEvent{Event: EventDeliverReminder}
+	case EventCancel:
+		return &InvoiceEvent{Event: EventCancel}
+	case EventUndoCancel:
+		return &InvoiceEvent{Event: EventUndoCancel}
+	case EventLock:
+		return &InvoiceEvent{Event: EventLock}
+	case EventUnlock:
+		return &InvoiceEvent{Event: EventUnlock}
+	}
+
+	log.Println("unrecognised event")
+	return &InvoiceEvent{Event: event}
 }

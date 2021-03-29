@@ -13,6 +13,7 @@ import (
 )
 
 const invoiceEndpoint = "invoices/%d.json"
+const invoiceEventEndpoint = "invoices/%d/fire.json"
 const invoicesEndpoint = "invoices.json"
 
 const (
@@ -202,4 +203,34 @@ func (c Client) DeleteInvoice(Id int) (bool, error) {
 	}
 
 	return resp.StatusCode == http.StatusNoContent, nil
+}
+
+// delete Invoice on /invoices/{ID}.json
+func (c Client) InvoiceEvent(Id int, Event *models.InvoiceEvent) (bool, error) {
+	values := url.Values{}
+	values.Add("event", Event.Event)
+
+	if Event.Event == models.EventPay {
+		if Event.PaidAt != nil {
+			values.Add("paid_at", Event.PaidAt.DefaultFormat())
+		}
+		if Event.PaidAmount != 0 {
+			values.Add("paid_amount", strconv.FormatFloat(float64(Event.PaidAmount), 'f', 6, 32))
+		}
+		if Event.VariableSymbol != "" {
+			values.Add("variable_symbol", Event.VariableSymbol)
+		}
+		if Event.BankAccountId != 0 {
+			values.Add("bank_account_id", strconv.Itoa(Event.BankAccountId))
+		}
+	}
+
+	resp, err := c.executeMethod(http.MethodPost, fmt.Sprintf(invoiceEventEndpoint, Id), nil, requestMetadata{
+		queryValues: values,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	return resp.StatusCode == http.StatusOK, nil
 }
