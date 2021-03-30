@@ -2,6 +2,12 @@ package models
 
 import "time"
 
+const (
+	VatModePayer            = "vat_payer"
+	VatModeNotPayer         = "not_vat_payer"
+	VatModeIdentifiedPerson = "identified_person"
+)
+
 type Account struct {
 	Subdomain                    string    `json:"subdomain"`
 	Plan                         string    `json:"plan"`
