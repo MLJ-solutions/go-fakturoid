@@ -10,6 +10,19 @@ type InvoiceLine struct {
 	VatRate   int     `json:"vat_rate"`
 }
 
+const (
+	StatusOpen      = "open"
+	StatusSent      = "sent"
+	StatusOverdue   = "overdue"
+	StatusPaid      = "paid"
+	StatusCancelled = "cancelled"
+)
+
+const (
+	VatPriceModeWithoutVat       = "without_vat"
+	VatPriceModeFromTotalWithVat = "from_total_with_vat"
+)
+
 type Invoice struct {
 	Id                      int               `json:"id,omitempty"`
 	CustomId                string            `json:"custom_id,omitempty"`
@@ -91,10 +104,10 @@ type Invoice struct {
 	UpdatedAt               string            `json:"updated_at,omitempty"`
 
 	// TODO EET
-	//Eet                     bool        `json:"eet,omitempty"`
-	//EetCashRegister         string        `json:"eet_cash_register,omitempty"`
-	//EetStore                string        `json:"eet_store,omitempty"`
-	//EetRecords              string        `json:"eet_records,omitempty"`
+	// Eet                     bool        `json:"eet,omitempty"`
+	// EetCashRegister         string        `json:"eet_cash_register,omitempty"`
+	// EetStore                string        `json:"eet_store,omitempty"`
+	// EetRecords              string        `json:"eet_records,omitempty"`
 }
 
 const (
@@ -119,7 +132,9 @@ type InvoiceEvent struct {
 	BankAccountId  int
 }
 
-func NewPayInvoiceEvent(PaidAt *FakturoidDateTime, PaidAmount float32, VariableSymbol string, BankAccountId int) *InvoiceEvent {
+func NewPayInvoiceEvent(
+	PaidAt *FakturoidDateTime, PaidAmount float32, VariableSymbol string, BankAccountId int,
+) *InvoiceEvent {
 	return &InvoiceEvent{
 		Event:          EventPay,
 		PaidAt:         PaidAt,
