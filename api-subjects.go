@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/MLJ-solutions/go-fakturoid/models"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -20,7 +20,7 @@ func (c Client) Subjects() ([]models.Subject, error) {
 		return []models.Subject{}, err
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	defer closeResponse(resp)
 
 	if err != nil {
@@ -52,7 +52,7 @@ func (c Client) SubjectsSearch(query string) ([]models.Subject, error) {
 		return []models.Subject{}, err
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	defer closeResponse(resp)
 
 	if err != nil {
@@ -83,7 +83,7 @@ func (c Client) CreateSubject(subject models.Subject) (models.Subject, error) {
 	}
 
 	fmt.Println(resp)
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	defer closeResponse(resp)
 
 	if err != nil {

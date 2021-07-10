@@ -3,7 +3,7 @@ package go_fakturoid
 import (
 	"encoding/json"
 	"github.com/MLJ-solutions/go-fakturoid/models"
-	"io"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -16,7 +16,7 @@ func (c Client) BankAccounts() ([]models.BankAccount, error) {
 		return []models.BankAccount{}, err
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	defer closeResponse(resp)
 
 	if err != nil {

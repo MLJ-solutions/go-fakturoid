@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/MLJ-solutions/go-fakturoid/models"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -91,7 +91,7 @@ func (c Client) Invoices(invoiceFilters InvoiceFilter) ([]models.Invoice, error)
 		return []models.Invoice{}, err
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	defer closeResponse(resp)
 
 	if err != nil {
@@ -123,7 +123,7 @@ func (c Client) InvoicesSearch(query string) ([]models.Invoice, error) {
 		return []models.Invoice{}, err
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	defer closeResponse(resp)
 
 	if err != nil {
@@ -153,7 +153,7 @@ func (c Client) CreateInvoice(Invoice models.Invoice) (models.Invoice, error) {
 		return models.Invoice{}, err
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	defer closeResponse(resp)
 
 	if err != nil {
@@ -180,7 +180,7 @@ func (c Client) UpdateInvoice(Invoice models.Invoice, Id int) (models.Invoice, e
 		return models.Invoice{}, err
 	}
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	defer closeResponse(resp)
 
 	if err != nil {
